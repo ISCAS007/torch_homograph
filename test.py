@@ -41,6 +41,9 @@ def show_offset(imgs,img_path,points_offset,points_perturb_true,outputs):
         pts_img_origin=points_origin[idx,:].reshape(4,2)
         pts_img_perturb_predict=pts_img_origin+points_offset_predict[idx,:].reshape(4,2)
         pts_img_perturb_true=points_perturb_true[idx,:].reshape(4,2)
+        mean_corner_error=np.mean(np.abs(pts_img_perturb_predict-pts_img_perturb_true))
+        print('mean corner error is',mean_corner_error)
+        
         h_predict, status = cv2.findHomography(pts_img_origin, pts_img_perturb_predict, cv2.RANSAC)
         h_true, status = cv2.findHomography(pts_img_origin, pts_img_perturb_true, cv2.RANSAC)
         # rgb image 320x240
@@ -64,8 +67,8 @@ def show_offset(imgs,img_path,points_offset,points_perturb_true,outputs):
         img_homo_true=cv2.polylines(img_homo_true,point_yx2xy(pts_img_origin),
                                        isClosed=True,color=(255,255,0),thickness=5)
         show_images([img_origin,img_homo_predict,img_homo_true],
-                    ['origin image','predict homo image','true homo image'])
-    
+                    ['origin image %0.2f'%mean_corner_error,'predict homo image','true homo image'])
+        
 if __name__ == '__main__':
     parser=get_parser()
     args=parser.parse_args()
@@ -92,12 +95,14 @@ if __name__ == '__main__':
     model.eval()
     for idx,(datas) in enumerate(val_loader):
         imgs=datas['imgs'].to(device).float()
-        points_offset=datas['points_offset'].data.cpu().numpy()
+        points_offset=32*datas['points_offset'].data.cpu().numpy()
         points_perturb_true=datas['points_perturb'].data.cpu().numpy()
         img_path=datas['img_path']
         
-        outputs=model.forward(imgs)
+        outputs=32*model.forward(imgs)
         
         show_offset(imgs,img_path,points_offset,points_perturb_true,outputs)
         
+        points_offset_predict=outputs.data.cpu().numpy()
+        mean_corner_error=np.mean(np.abs(points_offset_predict-points_offset))
         break

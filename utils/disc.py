@@ -21,7 +21,7 @@ def show_images(images,titles=None,vmin=None,vmax=None):
         else:
             ax[i].set_title(titles[i])
 
-    plt.show()
+    plt.show();
     
 def point_yx2xy(yx_pts):
     """

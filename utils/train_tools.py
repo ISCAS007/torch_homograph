@@ -134,8 +134,22 @@ def keras_fit(args):
     writer=init_writer(args,log_dir)
     
     optimizer_params = [{'params': [p for p in model.parameters() if p.requires_grad]}]
-    optimizer = torch.optim.Adam(
-            optimizer_params, lr=args.init_lr, weight_decay=1e-4, amsgrad=False)
+    
+    if args.optimizer=='adam':
+        optimizer = torch.optim.Adam(
+                optimizer_params, lr=args.init_lr, weight_decay=args.weight_decay, amsgrad=False)
+    elif args.optimizer=='adamax':
+        optimizer = torch.optim.Adamax(
+                optimizer_params, lr=args.init_lr, weight_decay=args.weight_decay)
+    elif args.optimizer=='amsgrad':
+        optimizer = torch.optim.Adam(
+                optimizer_params, lr=args.init_lr, weight_decay=args.weight_decay, amsgrad=True)
+    elif args.optimizer=='sgd':
+        optimizer = torch.optim.SGD(
+                optimizer_params,lr=args.init_lr,weight_decay=args.weight_decay,momentum=0.9)
+    else:
+        assert False,'unknown optimizer %s'%(args.optimizer)
+    
     #loss_fn=torch.nn.L1Loss()
     loss_fn=torch.nn.MSELoss()
     

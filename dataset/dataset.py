@@ -137,7 +137,7 @@ class dataset(TD.Dataset):
         img_perturb_patch = img_perturb[y_start:y_end, x_start:x_end]  # patch 2
         
         # points_origin = points_perturb - points_offset
-        points_offset = np.array([y_1_offset,x_1_offset,y_2_offset,x_2_offset,y_3_offset,x_3_offset,y_4_offset,x_4_offset])
+        points_offset = np.array([y_1_offset,x_1_offset,y_2_offset,x_2_offset,y_3_offset,x_3_offset,y_4_offset,x_4_offset])/32
         points_perturb = np.array([y_1_p,x_1_p,y_2_p,x_2_p,y_3_p,x_3_p,y_4_p,x_4_p])
         
         #norm

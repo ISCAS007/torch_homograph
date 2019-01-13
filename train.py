@@ -45,10 +45,15 @@ def get_parser():
                         choices=['caffe','pytorch','cityscapes','-1,1','0,1'],
                         default='-1,1')
         
-#    parser.add_argument("--optimizer",
-#                        help="optimizer name",
-#                        choices=['adam', 'sgd' ,'adamax', 'amsgrad'],
-#                        default='adam')
+    parser.add_argument("--optimizer",
+                        help="optimizer name",
+                        choices=['adam', 'sgd' ,'adamax', 'amsgrad'],
+                        default='adam')
+    
+    parser.add_argument('--weight_decay',
+                        help='weight decay for optimizer',
+                        type=float,
+                        default=1e-4)
     
     parser.add_argument('--log_dir',
                         help='base logdir for summary and checkpoints',
